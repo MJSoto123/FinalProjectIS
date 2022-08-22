@@ -273,7 +273,7 @@ Debería poder extender el comportamiento de una clase, sin modificarlo.
 Dice que "las entidades de software (clases, módulos, funciones, etc.) deben abrirse para una extensión, pero cerrarse para modificarse". En detalle, dice que podemos extender el comportamiento de una clase, cuando sea necesario, a través de herencia, interfaz y composición. Aún así, no podemos permitir que la apertura de esta clase haga modificaciones menores.
 
 #### Fragmento de Código
-En el siguiente fragmento de código podemos ver como extendemos la clase ```base.repository.js``` para implementar el nuevo uso de funciones para la interacción de datos. Este fragmento se encuentra en ```course.repository.js```
+En el siguiente fragmento de código podemos ver como extendemos la clase ```base.repository.js``` para implementar nuevas funciones, las cuales son particulares para la modificación del modelo curso. Además realizamos esta tarea sin la necesidad de modificar la clase base. Este fragmento se encuentra en ```course.repository.js```
 
 ```
 const BaseRepository = require("./base.repository");
