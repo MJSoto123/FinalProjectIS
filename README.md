@@ -271,6 +271,8 @@ async create({ Course_Name, SectionID, TypeID, ProfessorID, Semestre }) {
 #### Descripción
 Debería poder extender el comportamiento de una clase, sin modificarlo.
 Dice que "las entidades de software (clases, módulos, funciones, etc.) deben abrirse para una extensión, pero cerrarse para modificarse". En detalle, dice que podemos extender el comportamiento de una clase, cuando sea necesario, a través de herencia, interfaz y composición. Aún así, no podemos permitir que la apertura de esta clase haga modificaciones menores.
+##### Meta
+Este principio tiene como objetivo extender el comportamiento de una Clase sin cambiar el comportamiento existente de esa Clase. Esto es para evitar causar errores dondequiera que se use la Clase.
 
 #### Fragmento de Código
 En el siguiente fragmento de código podemos ver como extendemos la clase ```base.repository.js``` para implementar nuevas funciones, las cuales son particulares para la modificación del modelo curso. Además realizamos esta tarea sin la necesidad de modificar la clase base. Este fragmento se encuentra en ```course.repository.js```
@@ -305,8 +307,153 @@ module.exports = CourseRepository;
 
 ### 2. ISP - Interface segregation principle
 #### Descripción
-#### Fragmento de Código
+No se debe obligar a los clientes a depender de métodos que no utilizan.
+Cuando se requiere que una Clase realice acciones que no son útiles, es un desperdicio y puede producir errores inesperados si la Clase no tiene la capacidad de realizar esas acciones.
 
+Una clase debe realizar solo las acciones necesarias para cumplir su función. Cualquier otra acción debe eliminarse por completo o moverse a otro lugar si otra Clase podría usarla en el futuro.
+
+##### Meta
+
+Este principio tiene como objetivo dividir un conjunto de acciones en conjuntos más pequeños para que una Clase ejecute SÓLO el conjunto de acciones que requiere.
+#### Fragmento de Código
+Este principio fue utilizado en el desarrollo tanto de los **repositorios** como en los **servicios**, los metodos principales usados para el CRUD estan definidos en ```base.repository.js``` y en ```base.service.js``` respectivamente, mientras que las funciones las cuales son usadas unica y exclusivamente por los demas repositorios y servicios para razones especificas de implementación, estan definidas cada una en su respectivo archivo.
+- Por ejemplo se muestran las funciones particulares del archivo ```course.service.js``` 
+
+```
+const BaseService = require("./base.service");
+
+class CourseService extends BaseService {
+  constructor(CourseRepository) {
+    super(CourseRepository);
+    this._CourseRepository = CourseRepository;
+  }
+
+  async findByIdProfessor(id) {
+    if (!id) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Email or password missing";
+      throw error;
+    }
+
+    const entity = await this.repository.findByIdProfessor(id);
+
+    if (!entity) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Failed authentication";
+      throw error;
+    }
+    return entity;
+  }
+  
+  async updateCantEstIn(id) {
+    if (!id) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Parametro id debe ser enviado";
+      throw error;
+    }
+
+    const entity = await this.repository.updateCantEstIn(id);
+
+    if (!entity) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Entidad no encontrada";
+      throw error;
+    }
+    return entity;
+  }
+
+  async updateCantEstDe(id) {
+    if (!id) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Parametro id debe ser enviado";
+      throw error;
+    }
+
+    const entity = await this.repository.updateCantEstDe(id);
+
+    if (!entity) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Entidad no encontrada";
+      throw error;
+    }
+    return entity;
+  }
+}
+
+module.exports = CourseService;
+```
 ### 3. DIP - Dependency inversion principle
 #### Descripción
+Este principio dice que una clase no debe fusionarse con la herramienta que utiliza para ejecutar una acción. Más bien, debe fusionarse con la interfaz que permitirá que la herramienta se conecte a la Clase.
+
+También dice que tanto la Clase como la interfaz no deben saber cómo funciona la herramienta. Sin embargo, la herramienta debe cumplir con las especificaciones de la interfaz.
+
+##### Meta
+
+Este principio tiene como objetivo reducir la dependencia de una Clase de alto nivel en la Clase de bajo nivel mediante la introducción de una interfaz.
+
 #### Fragmento de Código
+Un claro ejemplo de este principio es la tanto ```base.repository.js``` como ```base.service.js```, ya que para el metodo ```create``` por ejemplo no importa la data que se envie, esto debido a que actuan como una interfaz. Sin embargo en cada modelo tiene una implementación la cual debe ser satizfecha para su ejecución.
+- Base repository como interfaz
+
+```
+class BaseRepository {
+  constructor(model) {
+    this.model = model;
+  }
+  async get(id) {
+    return this.model.get(id);
+  }
+  async getAll() {
+    return this.model.getAll();
+  }
+  async getByName(name) {
+    return this.model.getByName(name);
+  }
+  async create(entity) {
+    return this.model.create(entity);
+  }
+  async update(entity) {
+    return this.model.update(entity);
+  }
+  async delete(id) {
+    return this.model.delete(id);
+  }
+}
+
+module.exports = BaseRepository;
+```
+
+- Creación para un curso 
+
+```
+async create({ Course_Name, SectionID, TypeID, ProfessorID, Semestre }) {
+    const con = connectionDb.promise();
+    const data = await con.query(
+      "INSERT INTO course (Course_Name,SectionID,TypeID,ProfessorID,NumEst,Semestre) VALUES (?,?,?,?,?,?)",
+      [Course_Name, SectionID, TypeID, ProfessorID, 0, Semestre]
+    );
+
+    console.log("error", data);
+    return data[0];
+  }
+```
+
+- Creación para una Persona
+
+```
+async create({ First_Name, Last_Name, Email, DNI, Mobile_Phone, CityID }) {
+    const con = connectionDb.promise();
+    const data = await con.query(
+      "INSERT INTO person (First_Name,Last_Name,Email,DNI,Home_Phone,Mobile_Phone,CityID) VALUES (?,?,?,?,?,?,?)",
+      [First_Name, Last_Name, Email, DNI, null, Mobile_Phone, CityID]
+    );
+    return data[0].insertId;
+  }
+```
