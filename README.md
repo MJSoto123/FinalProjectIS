@@ -11,14 +11,23 @@
 
 ## Práctica 9 - Estilos de Programación
 
-### Estilo 1 - Pipeline
+### Estilo 1 - Restful
 #### Descripción
-La mejor analogía para el estilo Pipeline es una tubería de fábrica, como las que se usan en la industria automotriz. Los automóviles se ensamblan pieza por pieza a lo largo de una "cinta transportadora" donde hay estaciones que realizan tareas individuales, como instalar el motor, poner las puertas, instalar el capó y el maletero, etc.
+REST es el principio arquitectónico subyacente de la web. Lo sorprendente de la web es el hecho de que los clientes (navegadores) y los servidores pueden interactuar de formas complejas sin que el cliente sepa nada de antemano sobre el servidor y los recursos que alberga. La restricción clave es que tanto el servidor como el cliente deben estar de acuerdo con el medio utilizado, que en el caso de la web es HTML.
 
-En programación, el estilo Pipeline se desarrolla utilizando funciones de retorno de valor. A cada tarea de un problema se le asigna una función, y la salida de la función anterior se convierte en la entrada de la función siguiente. Todos los datos se expresan como la entrada de una función o la salida de una función, excepto los datos originales que son la entrada de la primera función en la canalización.
+Interactivo: extremo a extremo entre un agente activo (por ejemplo, una persona) y un backend.
 
+Separación entre Cliente (interfaz de usuario) y Servidor (almacenamiento de datos)
+
+Sin estado, como en cliente--servidor sin estado: cada solicitud del cliente al servidor debe contener toda la información necesaria para que el servidor atienda la solicitud. El servidor no puede almacenar el contexto de la interacción. El estado de la sesión está en el cliente.
+Interfaz uniforme: recursos que se crean y recuperan, identificadores de recursos y representación hipermedia que es el motor del estado de la aplicación
 #### Fragmento de código
-
+Podemos ver la importación de la API, y la construcción general  de esta se encuentra [aquí](https://github.com/MJSoto123/FinalProjectIS/tree/main/Application/src/interfaces "API").
+```
+const indexRouter = require("./interfaces/routes/index");
+const usersRouter = require("./interfaces/routes/users");
+const apiRouter = require("./interfaces/routes/api");
+```
 ### Estilo 2 - Things
 #### Descripción
 El problema más grande se descompone en 'cosas' que tienen sentido para el dominio del problema.
@@ -53,18 +62,63 @@ async authenticate(email, password) {
     return this.model.authenticate(email, password);
   }
 ```
-### Estilo 3 - Restful
+
+### Estilo 3 - Hollywood
 #### Descripción
-REST es el principio arquitectónico subyacente de la web. Lo sorprendente de la web es el hecho de que los clientes (navegadores) y los servidores pueden interactuar de formas complejas sin que el cliente sepa nada de antemano sobre el servidor y los recursos que alberga. La restricción clave es que tanto el servidor como el cliente deben estar de acuerdo con el medio utilizado, que en el caso de la web es HTML.
+El problema más grande se descompone en entidades usando alguna forma de abstracción (objetos, módulos o similar)
 
-Interactivo: extremo a extremo entre un agente activo (por ejemplo, una persona) y un backend.
+Las entidades nunca son llamadas directamente para acciones.
 
-Separación entre Cliente (interfaz de usuario) y Servidor (almacenamiento de datos)
+Las entidades proporcionan interfaces para que otras entidades puedan registrar devoluciones de llamada
 
-Sin estado, como en cliente--servidor sin estado: cada solicitud del cliente al servidor debe contener toda la información necesaria para que el servidor atienda la solicitud. El servidor no puede almacenar el contexto de la interacción. El estado de la sesión está en el cliente.
-Interfaz uniforme: recursos que se crean y recuperan, identificadores de recursos y representación hipermedia que es el motor del estado de la aplicación
+En ciertos puntos del cómputo, las entidades llaman a las otras entidades que se han registrado para devoluciones de llamadas.
+
 #### Fragmento de código
+La abstracción por parte de los modelos esta en la carpeta [models](https://github.com/MJSoto123/FinalProjectIS/tree/main/Application/src/domain/models "models").
+Los siguientes fragmentos muestran el flujo para crear un curso, este flujo se activa cuando una profesor quiere crear un curso.
+- Este el código en el ```professor.controller.js```, para la función ```createCourse``` donde se llama al servicio.
 
+```
+async createCourse(Course_Name, SectionID, TypeID, ProfessorID, Semestre) {
+    const instanceCourseRepository = new CourseRepository(courseDb);
+    const instanceCourseService = new CourseService(instanceCourseRepository);
+    const result = instanceCourseService.create({
+      Course_Name,
+      SectionID,
+      TypeID,
+      ProfessorID,
+      Semestre,
+    });
+    const data = await result.catch((err) => {
+      console.log("Professor Controller Error", err);
+      return null;
+    });
+
+    return data;
+  }
+```
+- El servicio recepciona la data y llama al **repositorio**. En este caso  esta función no se encuentra alojada en el ```course.service.js```, sino que se encuentra definida en el ```data.service.js``` debido a que es una función de creación, la cual pertenece al CRUD convencional  que son manejadas por este. Sin embargo ```course.service.js``` es una extención de la ```base.service.js```, por esto las llamadas son dirigidas a ```course.service.js```.
+
+```
+async create(data) {
+    const entity = await this.repository.create(data);
+    if (!entity) {
+      const error = new Error();
+      error.status = 400;
+      error.message = "Entidad no encontrada";
+      throw error;
+    }
+    return entity;
+  }
+```
+- Finalmente ```course.repository.js``` hace la "llamada"  al modelo o abstracción tal como lo indica el estilo Hollywood.
+Cabe resaltar que debido a ser una función de creación, esta funciona del mismo modo descrito en el service, es decir esta definida en ```base.repository.js```.
+
+```
+ async create(entity) {
+    return this.model.create(entity);
+  }
+```
 
 ## Práctica 10 - Codificación Legible (Clean Code)
 ### 
