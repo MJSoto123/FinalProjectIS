@@ -22,8 +22,11 @@ En programación, el estilo Pipeline se desarrolla utilizando funciones de retor
 ### Estilo 2 - Things
 #### Descripción
 El problema más grande se descompone en 'cosas' que tienen sentido para el dominio del problema.
+
 Cada 'cosa' es una cápsula de datos que expone los procedimientos al resto del mundo
+
 Nunca se accede a los datos directamente, solo a través de estos procedimientos
+
 Las cápsulas pueden reapropiarse de procedimientos definidos en otras cápsulas
 #### Fragmento de código
 El siguiente fragmento pertenece a ```login.service.js```, donde no se accede a los datos directamente, en lugar de eso se realiza una petición al repositorio.
@@ -56,8 +59,11 @@ async authenticate(email, password) {
 ### Estilo 3 - Restful
 #### Descripción
 REST es el principio arquitectónico subyacente de la web. Lo sorprendente de la web es el hecho de que los clientes (navegadores) y los servidores pueden interactuar de formas complejas sin que el cliente sepa nada de antemano sobre el servidor y los recursos que alberga. La restricción clave es que tanto el servidor como el cliente deben estar de acuerdo con el medio utilizado, que en el caso de la web es HTML.
-Interactivo: extremo a extremo entre un agente activo (por ejemplo, una persona) y un backend
+
+Interactivo: extremo a extremo entre un agente activo (por ejemplo, una persona) y un backend.
+
 Separación entre Cliente (interfaz de usuario) y Servidor (almacenamiento de datos)
+
 Sin estado, como en cliente--servidor sin estado: cada solicitud del cliente al servidor debe contener toda la información necesaria para que el servidor atienda la solicitud. El servidor no puede almacenar el contexto de la interacción. El estado de la sesión está en el cliente.
 Interfaz uniforme: recursos que se crean y recuperan, identificadores de recursos y representación hipermedia que es el motor del estado de la aplicación
 #### Fragmento de código
