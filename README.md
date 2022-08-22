@@ -26,7 +26,7 @@ Cada 'cosa' es una cápsula de datos que expone los procedimientos al resto del 
 Nunca se accede a los datos directamente, solo a través de estos procedimientos
 Las cápsulas pueden reapropiarse de procedimientos definidos en otras cápsulas
 #### Fragmento de código
-El siguiente fragmento pertenece a login.service.js, donde llama la función authenticate consulta los datos al repositorio ```const entity = await this.repository.authenticate(email, password); ```.
+El siguiente fragmento pertenece a ```login.service.js```, donde no se accede a los datos directamente, en lugar de eso se realiza una petición al repositorio.
 ```
 async authenticate(email, password) {
     if (!email || !password) {
@@ -47,8 +47,21 @@ async authenticate(email, password) {
     return entity;
   }
 ```
-A continuación
-### 
+A continuación el repositorio  realiza la consulta al modelo:
+```
+async authenticate(email, password) {
+    return this.model.authenticate(email, password);
+  }
+```
+### Estilo 3 - Restful
+#### Descripción
+REST es el principio arquitectónico subyacente de la web. Lo sorprendente de la web es el hecho de que los clientes (navegadores) y los servidores pueden interactuar de formas complejas sin que el cliente sepa nada de antemano sobre el servidor y los recursos que alberga. La restricción clave es que tanto el servidor como el cliente deben estar de acuerdo con el medio utilizado, que en el caso de la web es HTML.
+Interactivo: extremo a extremo entre un agente activo (por ejemplo, una persona) y un backend
+Separación entre Cliente (interfaz de usuario) y Servidor (almacenamiento de datos)
+Sin estado, como en cliente--servidor sin estado: cada solicitud del cliente al servidor debe contener toda la información necesaria para que el servidor atienda la solicitud. El servidor no puede almacenar el contexto de la interacción. El estado de la sesión está en el cliente.
+Interfaz uniforme: recursos que se crean y recuperan, identificadores de recursos y representación hipermedia que es el motor del estado de la aplicación
+#### Fragmento de código
+
 
 ## Práctica 10 - Codificación Legible (Clean Code)
 ### 
