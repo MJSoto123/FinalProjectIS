@@ -399,7 +399,7 @@ También dice que tanto la Clase como la interfaz no deben saber cómo funciona 
 Este principio tiene como objetivo reducir la dependencia de una Clase de alto nivel en la Clase de bajo nivel mediante la introducción de una interfaz.
 
 #### Fragmento de Código
-Un claro ejemplo de este principio es la tanto ```base.repository.js``` como ```base.service.js```, ya que para el metodo ```create``` por ejemplo no importa la data que se envie, esto debido a que actuan como una interfaz. Sin embargo en cada modelo tiene una implementación la cual debe ser satizfecha para su ejecución.
+Un claro ejemplo de este principio es la tanto ```base.repository.js``` como ```base.service.js```, ya que para el metodo ```create``` por ejemplo no importa la data que se envie, esto debido a que actuan como una interfaz. Sin embargo en cada modelo tiene una implementación independiente.
 - Base repository como interfaz
 
 ```
