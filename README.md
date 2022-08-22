@@ -267,6 +267,46 @@ async create({ Course_Name, SectionID, TypeID, ProfessorID, Semestre }) {
 ```
 
 ## Práctica 11 - Principios SOLID
-###
-### 
-### 
+### 1. OCP - Open/closed principle
+#### Descripción
+Debería poder extender el comportamiento de una clase, sin modificarlo.
+Dice que "las entidades de software (clases, módulos, funciones, etc.) deben abrirse para una extensión, pero cerrarse para modificarse". En detalle, dice que podemos extender el comportamiento de una clase, cuando sea necesario, a través de herencia, interfaz y composición. Aún así, no podemos permitir que la apertura de esta clase haga modificaciones menores.
+
+#### Fragmento de Código
+En el siguiente fragmento de código podemos ver como extendemos la clase ```base.repository.js``` para implementar el nuevo uso de funciones para la interacción de datos. Este fragmento se encuentra en ```course.repository.js```
+
+```
+const BaseRepository = require("./base.repository");
+
+class CourseRepository extends BaseRepository {
+  constructor(CourseDb) {
+    super(CourseDb);
+  }
+
+  async getAllWithoutPagination() {
+    return this.model.find();
+  }
+
+  async findByIdProfessor(id) {
+    return this.model.findByIdProfessor(id);
+  }
+
+  async updateCantEstIn(id) {
+    return this.model.updateCantEstIn(id);
+  }
+
+  async updateCantEstDe(id) {
+    return this.model.updateCantEstDe(id);
+  }
+}
+
+module.exports = CourseRepository;
+```
+
+### 2. ISP - Interface segregation principle
+#### Descripción
+#### Fragmento de Código
+
+### 3. DIP - Dependency inversion principle
+#### Descripción
+#### Fragmento de Código
