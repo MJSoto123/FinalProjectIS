@@ -76,7 +76,7 @@ En ciertos puntos del cómputo, las entidades llaman a las otras entidades que s
 #### Fragmento de código
 La abstracción por parte de los modelos esta en la carpeta [models](https://github.com/MJSoto123/FinalProjectIS/tree/main/Application/src/domain/models "models").
 Los siguientes fragmentos muestran el flujo para crear un curso, este flujo se activa cuando una profesor quiere crear un curso.
-- Este el código en el ```professor.controller.js```, para la función ```createCourse``` donde se llama al servicio.
+- Este el fragmento de código está en el ```professor.controller.js```, para la función ```createCourse``` donde se llama al servicio.
 
 ```
 async createCourse(Course_Name, SectionID, TypeID, ProfessorID, Semestre) {
