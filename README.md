@@ -22,12 +22,9 @@ En programación, el estilo Pipeline se desarrolla utilizando funciones de retor
 ### Estilo 2 - Things
 #### Descripción
 El problema más grande se descompone en 'cosas' que tienen sentido para el dominio del problema.
-
-Cada 'cosa' es una cápsula de datos que expone los procedimientos al resto del mundo
-
-Nunca se accede a los datos directamente, solo a través de estos procedimientos
-
-Las cápsulas pueden reapropiarse de procedimientos definidos en otras cápsulas
+Cada 'cosa' es una cápsula de datos que expone los procedimientos al resto del mundo.
+Nunca se accede a los datos directamente, solo a través de estos procedimientos.
+Las cápsulas pueden reapropiarse de procedimientos definidos en otras cápsulas.
 #### Fragmento de código
 El siguiente fragmento pertenece a ```login.service.js```, donde no se accede a los datos directamente, en lugar de eso se realiza una petición al repositorio.
 ```
